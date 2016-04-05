@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/icon">
+        <file alias="train">train.png</file>
+        <file>export.png</file>
+        <file>import.png</file>
+        <file>help.png</file>
+        <file>refresh.png</file>
+        <file>config.png</file>
+    </qresource>
+</RCC>

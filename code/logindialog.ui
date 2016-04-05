@@ -44,7 +44,7 @@
     <string>火车票管理系统</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>50</x>
@@ -71,7 +71,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="visitorButton">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
         <horstretch>0</horstretch>
@@ -98,18 +98,18 @@
     </item>
    </layout>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>70</x>
      <y>80</y>
      <width>261</width>
-     <height>63</height>
+     <height>64</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
     <property name="verticalSpacing">
-     <number>14</number>
+     <number>16</number>
     </property>
     <item row="0" column="0">
      <widget class="QLabel" name="label">
@@ -119,17 +119,21 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QLineEdit" name="lineEdit"/>
+     <widget class="QLineEdit" name="userNameLine"/>
     </item>
     <item row="1" column="0">
      <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>密码:</string>
+       <string> 密 码:</string>
       </property>
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="lineEdit_2"/>
+     <widget class="QLineEdit" name="pwdLine">
+      <property name="inputMethodHints">
+       <set>Qt::ImhNone</set>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

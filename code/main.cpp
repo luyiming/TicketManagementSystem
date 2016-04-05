@@ -6,18 +6,26 @@
 #include <QDialog>
 #include <QDebug>
 #include <QTextCodec>
+#include <QFile>
+#include <QDir>
+#include <QStringList>
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    //QTextCodec::setCodecForLocale(QTextCodec::codecForName("GBK"));
-    //QTextCodec::setCodecForTr(QTextCodec::codecForName("gb18030"));
 
-    LoginDialog logindlg;
     MainWindow mainwindow;
-    mainwindow.setWindowTitle("Ticket Manegement System");
-    auto exit = logindlg.exec();
+
+    LoginDialog loginDialog;
+
+    QObject::connect(&loginDialog, &LoginDialog::visitorMode, &mainwindow, &MainWindow::setVisitorMode);
+
+    auto exit = loginDialog.exec();
+
     if(QDialog::Accepted == exit)
+    {
         mainwindow.show();
+        mainwindow.autoImport();
+    }
     else if(QDialog::Rejected == exit)
         return 0;
 

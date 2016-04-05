@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ImportDialog</class>
- <widget class="QDialog" name="ImportDialog">
+ <class>trainAMDialog</class>
+ <widget class="QDialog" name="trainAMDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>316</width>
+    <width>318</width>
     <height>386</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>更改</string>
   </property>
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>40</x>
+     <x>50</x>
      <y>320</y>
      <width>89</width>
      <height>51</height>
@@ -42,10 +42,10 @@
   <widget class="QWidget" name="formLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>40</x>
+     <x>30</x>
      <y>30</y>
-     <width>231</width>
-     <height>271</height>
+     <width>261</width>
+     <height>274</height>
     </rect>
    </property>
    <layout class="QFormLayout" name="formLayout">
@@ -55,7 +55,7 @@
     <item row="0" column="0">
      <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>班次</string>
+       <string>     班次</string>
       </property>
      </widget>
     </item>
@@ -63,74 +63,54 @@
      <widget class="QLineEdit" name="trainIDLine"/>
     </item>
     <item row="1" column="0">
-     <widget class="QLabel" name="label_3">
+     <widget class="QLabel" name="label">
       <property name="text">
-       <string>起点站</string>
+       <string> 发车时间</string>
       </property>
      </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QLineEdit" name="startingLine"/>
+     <widget class="QLineEdit" name="departureTimeLine"/>
     </item>
     <item row="2" column="0">
-     <widget class="QLabel" name="label_4">
+     <widget class="QLabel" name="label_5">
       <property name="text">
-       <string>终点站</string>
+       <string> 行车时间</string>
       </property>
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="terminalLine"/>
+     <widget class="QLineEdit" name="drivingTimeLine"/>
     </item>
     <item row="3" column="0">
-     <widget class="QLabel" name="label">
+     <widget class="QLabel" name="label_6">
       <property name="text">
-       <string>发车时间</string>
+       <string>     票价</string>
       </property>
      </widget>
     </item>
     <item row="3" column="1">
-     <widget class="QLineEdit" name="departureTimeLine"/>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>行车时间</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="1">
-     <widget class="QLineEdit" name="drivingTimeLine"/>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLabel" name="label_6">
-      <property name="text">
-       <string>票价</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="1">
      <widget class="QLineEdit" name="priceLine"/>
     </item>
-    <item row="6" column="0">
+    <item row="4" column="0">
      <widget class="QLabel" name="label_7">
       <property name="text">
        <string>额定载客量</string>
       </property>
      </widget>
     </item>
-    <item row="6" column="1">
+    <item row="4" column="1">
      <widget class="QLineEdit" name="maxPassengersLine"/>
     </item>
-    <item row="7" column="0">
+    <item row="5" column="0">
      <widget class="QLabel" name="label_9">
       <property name="text">
-       <string>路线</string>
+       <string>     路线</string>
       </property>
      </widget>
     </item>
-    <item row="7" column="1">
-     <widget class="QLineEdit" name="routeLine"/>
+    <item row="5" column="1">
+     <widget class="QPlainTextEdit" name="routesText"/>
     </item>
    </layout>
   </widget>

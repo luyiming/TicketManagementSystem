@@ -1,6 +1,6 @@
 ﻿#include "magalgorithm.h"
 
-std::vector<std::string> splitString(std::string str,std::string delim)
+std::vector<std::string> splitString(std::string str,std::string delim) // to be removed
 {
     std::string::size_type pos;
     std::vector<std::string> result;
@@ -15,7 +15,7 @@ std::vector<std::string> splitString(std::string str,std::string delim)
             std::string s = str.substr(i, pos - i);
             if(s != "")
                 result.push_back(s);
-            i = pos + delim.size() - 1; //迭代开始会i++
+            i = pos + delim.size() - 1; //at the beginning i++
         }
     }
     return result;

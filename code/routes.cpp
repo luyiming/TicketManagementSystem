@@ -27,9 +27,12 @@ using namespace std;
 
 bool Routes::modifyRoute(QString preTrainID, QString preDepatureTime, QStringList trainData)
 {
-    if(this->isTrainExist(trainData.at(0).toStdString(), trainData.at(1).toStdString()) == true)
+    if(preTrainID != trainData[0] || preDepatureTime != trainData[1])
     {
-        return false;
+        if(this->isTrainExist(trainData.at(0).toStdString(), trainData.at(1).toStdString()) == true)
+        {
+            return false;
+        }
     }
     deleteRoute(preTrainID.toStdString(), preDepatureTime.toStdString());
     createRoute(trainData);
@@ -208,7 +211,7 @@ bool Routes::ticketsSaveToFile(QString path)
             return false;
         }
         QTextStream out(&file);
-        out << QString::fromLocal8Bit("订单号\t购票人\t车次号\t始发站\t终点站\t票价\t票数\t总价\t");
+        out << QString::fromLocal8Bit("订单号\t购票人\t车次号\t始发站\t终点站\t票价\t票数\t总价\n");
         out << QString("--------------------------------------------------------------\n");
 
         struct Ticket
@@ -325,9 +328,9 @@ bool Routes::loadFromFile(QString path, int &importNum, int &skipNum, QString &s
             while(!in.atEnd())
             {
                 t = in.readLine();
-                if(t.size() < 7)
-                    continue;
                 QStringList sp1 = t.split(" ", QString::SkipEmptyParts);
+                if(sp1.size() < 7)
+                    continue;
                 trainData << sp1.at(0)
                           << sp1.at(1) + " " + sp1.at(2)
                           << sp1.at(3)

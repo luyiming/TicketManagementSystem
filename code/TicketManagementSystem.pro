@@ -16,24 +16,26 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     logindialog.cpp \
     routes.cpp \
-    magalgorithm.cpp \
     selldialog.cpp \
     trainAMDialog.cpp \
     querydialog.cpp \
     RouteQueryDialog.cpp \
     ConfigDialog.cpp \
-    ExportDialog.cpp
+    ExportDialog.cpp \
+    OnlineLoadingDialog.cpp \
+    ImportDialog.cpp
 
 HEADERS  += mainwindow.h \
     logindialog.h \
     routes.h \
-    magalgorithm.h \
     selldialog.h \
     trainAMDialog.h \
     querydialog.h \
     RouteQueryDialog.h \
     ConfigDialog.h \
-    ExportDialog.h
+    ExportDialog.h \
+    OnlineLoadingDialog.h \
+    ImportDialog.h
 
 FORMS    += mainwindow.ui \
     logindialog.ui \
@@ -42,7 +44,9 @@ FORMS    += mainwindow.ui \
     querydialog.ui \
     RouteQueryDialog.ui \
     ConfigDialog.ui \
-    ExportDialog.ui
+    ExportDialog.ui \
+    OnlineLoadingDialog.ui \
+    ImportDialog.ui
 
 RESOURCES += \
     res.qrc

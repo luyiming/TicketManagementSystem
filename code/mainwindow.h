@@ -8,6 +8,11 @@
 #include "routes.h"
 #include <QTableWidgetItem>
 #include "RouteQueryDialog.h"
+#include <QProcess>
+#include "ImportDialog.h"
+#include "ui_ImportDialog.h"
+#include "trainAMDialog.h"
+#include "ui_trainAMDialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,6 +30,9 @@ public:
     QTableWidget *trainTable;
     QTableWidget *ticketTable;
 
+protected:
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
 
 private slots:
     void on_quitButton_clicked();
@@ -39,6 +47,7 @@ private slots:
     void sellTicketDialog();
     void refundTicketDialog();
 
+    void importDialog();
     void loadFromFile();
     void exportDialog();
     void saveToFile();
@@ -55,9 +64,14 @@ private slots:
 
     void helpDialog();
     void removeAll();
+
+    void onlineLoadingDialog();
+    void onlineLoadFile();
 public:
     void setVisitorMode(bool mode);
     void autoImport();
+
+
 private:
     Ui::MainWindow *ui;
     QLabel *timeLabel;
@@ -65,6 +79,9 @@ private:
     RouteQueryDialog *routeQueryDialog;
     QStringList configInfo;
     bool visitorMode;
+
+
+
 };
 
 #endif // MAINWINDOW_H

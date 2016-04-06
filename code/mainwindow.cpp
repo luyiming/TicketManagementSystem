@@ -14,6 +14,10 @@
 #include "ui_RouteQueryDialog.h"
 #include "ExportDialog.h"
 #include "ui_ExportDialog.h"
+#include "OnlineLoadingDialog.h"
+#include "ui_OnlineLoadingDialog.h"
+#include "ImportDialog.h"
+#include "ui_ImportDialog.h"
 #include <QTableWidget>
 #include <QTableWidgetItem>
 #include <QComboBox>
@@ -34,6 +38,9 @@
 #include <QStringList>
 #include <QDesktopServices>
 #include <QIcon>
+#include <QMimeData>
+#include <QList>
+#include <QEvent>
 
 //----------------------------------------------------------------//
 //                                                                //
@@ -48,7 +55,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowIcon(QIcon(":/icon/train"));
 
-//----------------------------------* config *-------------------------------------------
+//-----------------------------------* DND *-------------------------------------------
+    setAcceptDrops(true);
+    ui->tabWidget->setAcceptDrops(false);
+//----------------------------------* config *-----------------------------------------
     visitorMode = false;
     if(visitorMode == true)
         this->setWindowTitle(QString::fromLocal8Bit("车票管理系统(访客模式)"));
@@ -95,7 +105,7 @@ MainWindow::MainWindow(QWidget *parent) :
     trainRoutes.setTicketImportPath(this->configInfo.at(5));
 
 //--------------------------------* signal-slots *----------------------------------------
-    connect(ui->importButton,    &QPushButton::clicked, this, &MainWindow::loadFromFile);
+    connect(ui->importButton,    &QPushButton::clicked, this, &MainWindow::importDialog);
     connect(ui->exportButton,    &QPushButton::clicked, this, &MainWindow::exportDialog);
     connect(ui->refreshButton,   &QPushButton::clicked, this, &MainWindow::refreshTable);
     connect(ui->removeButton,    &QPushButton::clicked, this, &MainWindow::deleteRoute);
@@ -123,8 +133,12 @@ MainWindow::MainWindow(QWidget *parent) :
     fileMenu->addAction(ticketsExportAction);
 
     QAction *importAction = new QAction(QIcon(":/icon/import.png"), QString::fromLocal8Bit("导入"), this);
-    connect(importAction, &QAction::triggered, this, &MainWindow::loadFromFile);
+    connect(importAction, &QAction::triggered, this, &MainWindow::importDialog);
     fileMenu->addAction(importAction);
+
+    QAction *onlineImportAction = new QAction(QIcon(":/icon/import.png"), QString::fromLocal8Bit("从网络导入"), this);
+    connect(onlineImportAction, &QAction::triggered, this, &MainWindow::onlineLoadingDialog);
+    fileMenu->addAction(onlineImportAction);
 
     QAction *emptyAction = new QAction(QIcon(":/icon/refresh.png"), QString::fromLocal8Bit("清空"), this);
     connect(emptyAction, &QAction::triggered, this, &MainWindow::removeAll);
@@ -319,6 +333,13 @@ void MainWindow::setTrainInfo(QStringList trainData)
     else
         QMessageBox::warning(this,  QString::fromLocal8Bit("失败"),  QString::fromLocal8Bit("不允许添加重复车次"));
 
+}
+void MainWindow::importDialog()
+{
+    ImportDialog *dialog = new ImportDialog(this);
+    connect(dialog, &ImportDialog::loadFromFile, this, &MainWindow::loadFromFile);
+    connect(dialog, &ImportDialog::onlineLoad, this, &MainWindow::onlineLoadingDialog);
+    dialog->exec();
 }
 
 void MainWindow::loadFromFile()
@@ -658,6 +679,67 @@ void MainWindow::autoImport()
         else
             QMessageBox::warning(this, QString::fromLocal8Bit("自动导入"), QString::fromLocal8Bit("无法打开文件%1").arg(this->configInfo.at(4)));
     }
+}
+
+void MainWindow::onlineLoadingDialog()
+{
+    OnlineLoadingDialog *onlineImportDialog = new OnlineLoadingDialog(this);
+    connect(onlineImportDialog, &OnlineLoadingDialog::beginLoadFile, this, &MainWindow::onlineLoadFile);
+    onlineImportDialog->exec();
+}
+
+void MainWindow::onlineLoadFile()
+{
+    int importNum = 0, skipNum = 0;
+    QString skipLine;
+    if(trainRoutes.loadFromFile("train.data", importNum, skipNum, skipLine) == true)
+    {
+        trainRoutes.refreshTrainInfo(trainTable);
+        if(skipNum == 0)
+            QMessageBox::information(this, QString::fromLocal8Bit("成功"), QString::fromLocal8Bit("共导入%1条车次信息").arg(importNum));
+        else
+            QMessageBox::information(this,
+                                     QString::fromLocal8Bit("成功"),
+                                     QString::fromLocal8Bit("共导入%1条车次信息\n有%2条重复车次信息未导入:  \n%3").arg(importNum).arg(skipNum).arg(skipLine));
+    }
+    else
+        QMessageBox::warning(this, QString::fromLocal8Bit("失败"), QString::fromLocal8Bit("无法打开文件"));
+
+}
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasFormat("text/uri-list")) {
+        event->acceptProposedAction();
+    }
+}
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    QList<QUrl> urls = event->mimeData()->urls();
+    if (urls.isEmpty()) {
+        return;
+    }
+
+    QString fileName = urls.first().toLocalFile();
+    if (fileName.isEmpty()) {
+        return;
+    }
+
+    int importNum = 0, skipNum = 0;
+    QString skipLine;
+    if(trainRoutes.loadFromFile(fileName, importNum, skipNum, skipLine) == true)
+    {
+        trainRoutes.refreshTrainInfo(trainTable);
+        if(skipNum == 0)
+            QMessageBox::information(this, QString::fromLocal8Bit("成功"), QString::fromLocal8Bit("共导入%1条车次信息").arg(importNum));
+        else
+            QMessageBox::information(this,
+                                     QString::fromLocal8Bit("成功"),
+                                     QString::fromLocal8Bit("共导入%1条车次信息\n有%2条重复车次信息未导入:  \n%3").arg(importNum).arg(skipNum).arg(skipLine));
+    }
+    else
+        QMessageBox::warning(this, QString::fromLocal8Bit("失败"), QString::fromLocal8Bit("无法打开文件"));
 }
 
 //----------------------------------------------------------------//

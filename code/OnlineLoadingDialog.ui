@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>OnlineLoadingDialog</class>
+ <widget class="QDialog" name="OnlineLoadingDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>714</width>
+    <height>500</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>在线导入</string>
+  </property>
+  <widget class="QTextEdit" name="textEdit">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>100</y>
+     <width>691</width>
+     <height>391</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="startButton">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>30</y>
+     <width>89</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>下载</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="clearButton">
+   <property name="geometry">
+    <rect>
+     <x>610</x>
+     <y>30</y>
+     <width>89</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>清空</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>30</y>
+     <width>72</width>
+     <height>15</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>省份:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>30</y>
+     <width>72</width>
+     <height>15</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>城市:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>30</y>
+     <width>72</width>
+     <height>15</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>线程数:</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="spinBox">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>60</y>
+     <width>101</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="maximum">
+    <number>20</number>
+   </property>
+   <property name="value">
+    <number>8</number>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="provinceBox">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>60</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>江苏</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QComboBox" name="cityBox">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>60</y>
+     <width>101</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>溧阳</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>南京</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QPushButton" name="loadButton">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>30</y>
+     <width>89</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>导入</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

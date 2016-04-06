@@ -1,5 +1,5 @@
-﻿#ifndef IMPORTDIALOG_H
-#define IMPORTDIALOG_H
+﻿#ifndef TRAINAMDIALOG_H
+#define TRAINAMDIALOG_H
 
 #include <QDialog>
 #include <QStringList>
@@ -34,4 +34,4 @@ private:
     QString preDepatureTime;
 };
 
-#endif // IMPORTDIALOG_H
+#endif // TRAINAMDIALOG_H

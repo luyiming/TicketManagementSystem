@@ -8,7 +8,6 @@
 #include "ui_querydialog.h"
 #include "ConfigDialog.h"
 #include "ui_ConfigDialog.h"
-#include "magalgorithm.h"
 #include "routes.h"
 #include "RouteQueryDialog.h"
 #include "ui_RouteQueryDialog.h"
@@ -52,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
     this->setWindowIcon(QIcon(":/icon/train"));
 
@@ -115,7 +115,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->modifyButton,    &QPushButton::clicked, this, &MainWindow::modifyTrainDialog);
     connect(ui->queryButton,     &QPushButton::clicked, this, &MainWindow::queryDialog);
     connect(ui->routeQueryButton,&QPushButton::clicked, this, &MainWindow::openRouteQueryDialog);
-//-----------------------------------* menu *-------------------------------------
+//-----------------------------------* menu *--------------------------------------------
     QMenu *fileMenu = ui->menuBar->addMenu(QString::fromLocal8Bit("文件"));
     QMenu *configMenu = ui->menuBar->addMenu(QString::fromLocal8Bit("选项"));
     QMenu *helpMenu = ui->menuBar->addMenu(QString::fromLocal8Bit("帮助"));
@@ -160,7 +160,7 @@ MainWindow::MainWindow(QWidget *parent) :
             << QString::fromLocal8Bit("终点站") << QString::fromLocal8Bit("发车时间")
             << QString::fromLocal8Bit("行车时间") << QString::fromLocal8Bit("票价")
             << QString::fromLocal8Bit("额定载客量") << QString::fromLocal8Bit("余票数")
-            << QString::fromLocal8Bit("路线");
+            << QString::fromLocal8Bit("路线/余票");
     trainTable->setHorizontalHeaderLabels(headers);
     trainTable->setEditTriggers(QAbstractItemView::NoEditTriggers); // uneditable
     trainTable->setSelectionBehavior(QAbstractItemView::SelectRows);//select entire row
@@ -174,7 +174,7 @@ MainWindow::MainWindow(QWidget *parent) :
     trainTable->setColumnWidth(2, 75);
     trainTable->setColumnWidth(3, 140);
     trainTable->setColumnWidth(5, 60);
-    trainTable->setColumnWidth(8, 105);
+    trainTable->setColumnWidth(8, 115);
 
     //ticket order table init
     ticketTable = new QTableWidget(this);
@@ -208,9 +208,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->addTab(ticketTable, QString::fromLocal8Bit("订单"));
 
 //------------------------------------* time *------------------------------------------
-    //time label
+
     timeLabel = new QLabel(this);
-    timeLabel->setGeometry(680, 471, 181, 16);
+    //timeLabel->setGeometry(680, 471, 181, 16);
+    QVBoxLayout *timeLayout = new QVBoxLayout(this);
+    timeLayout->addWidget(timeLabel);
+    ui->groupBox->setLayout(timeLayout);
     QTimer *timer = new QTimer(this);
     displayTime();
     connect(timer, SIGNAL(timeout()), this, SLOT(displayTime()));
@@ -227,12 +230,10 @@ void MainWindow::displayTime()
     QDateTime dt;
     QTime time;
     QDate date;
-
     dt.setTime(time.currentTime());
     dt.setDate(date.currentDate());
-
     QString currentDate = dt.toString("yyyy-MM-dd hh:mm:ss");
-    timeLabel->setText(currentDate);
+    timeLabel->setText("  " + currentDate);
 }
 
 void MainWindow::on_quitButton_clicked()

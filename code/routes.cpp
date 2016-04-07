@@ -43,7 +43,7 @@ bool Routes::modifyRoute(QString preTrainID, QString preDepatureTime, QStringLis
 
 bool Routes::createRoute(QStringList trainData)
 {
-    //输入格式
+    //format
     //trainID       0
     //departureTime 1
     //drivingTime   2
@@ -59,7 +59,7 @@ bool Routes::createRoute(QStringList trainData)
     tempRoute.trainID = trainData[0].toStdString();
     tempRoute.departureTime = trainData[1].toStdString();
     tempRoute.drivingTime = trainData[2].toStdString();
-    tempRoute.price = trainData[3].toInt();
+    tempRoute.price = trainData[3].toDouble();
     tempRoute.maxPassengers = trainData[4].toInt();
 
     for(int i = 5; i < trainData.size(); ++i)
@@ -152,14 +152,13 @@ void Routes::refreshTicketInfo(QTableWidget* &ticketTable)
         ticketTable->setItem(curRow, 1, new QTableWidgetItem(tickets[i].name));
         ticketTable->setItem(curRow, 2, new QTableWidgetItem(tickets[i].trainID));
         ticketTable->setItem(curRow, 3, new QTableWidgetItem(tickets[i].routes[0]));
-        ticketTable->setItem(curRow, 4, new QTableWidgetItem(tickets[i].routes[tickets[i].routes.size() - 1]));   //终点站
+        ticketTable->setItem(curRow, 4, new QTableWidgetItem(tickets[i].routes[tickets[i].routes.size() - 1]));
         ticketTable->setItem(curRow, 5, new QTableWidgetItem(QString::number(tickets[i].price)));
         ticketTable->setItem(curRow, 6, new QTableWidgetItem(QString::number(tickets[i].number)));
         ticketTable->setItem(curRow, 7, new QTableWidgetItem(QString::number(tickets[i].price * tickets[i].number)));
 
         ticketTable->resizeRowToContents(curRow);
     }
-
     ticketTable->setSortingEnabled(true);
 }
 
@@ -213,18 +212,6 @@ bool Routes::ticketsSaveToFile(QString path)
         QTextStream out(&file);
         out << QString::fromLocal8Bit("订单号\t购票人\t车次号\t始发站\t终点站\t票价\t票数\t总价\n");
         out << QString("--------------------------------------------------------------\n");
-
-        struct Ticket
-        {
-            int ticketID;
-            QString trainID;
-            QString departureTime;
-            QStringList routes;
-            QString name;
-            int number;
-            int price;
-            Ticket() : ticketID(-1), number(-1), price(-1){}
-        };
 
         for(int i = 0; i < tickets.size(); ++i)
         {
@@ -409,7 +396,6 @@ void Routes::deleteRoute(string trainID, string departureTime)
             if(it2 == *it)
             {
                 it = cities[name].erase(it);
-                //qDebug() << QString::fromStdString(name);
                 break;
             }
             else
@@ -440,7 +426,6 @@ QString Routes::sellTicket(Ticket ticket)
     int index = 0;
     for(Station *it = RouteIt->startingStation; it != NULL; it = it->next)
     {
-        //qDebug() << index;
         if(it->name == ticket.routes[index].toStdString())
         {
             it->seatsLeft -= ticket.number;
@@ -468,7 +453,6 @@ void Routes::refundTicket(int ticketID)
             int index = 0;
             for(Station *it2 = RouteIt->startingStation; it2 != NULL; it2 = it2->next)
             {
-                //qDebug() << index;
                 if(it2->name == it->routes[index].toStdString())
                 {
                     it2->seatsLeft += it->number;
@@ -539,7 +523,7 @@ QStringList Routes::bfs(QString startingStation, QString terminalStation)
             else
                 break;
         }
-        for(int i = res.size() - 1; i >=0; --i)
+        for(int i = res.size() - 1; i >= 0; --i)
         {
             l += QString::fromStdString(res[i]->name);
             if(i)
@@ -556,7 +540,8 @@ QStringList Routes::bfs(QString startingStation, QString terminalStation)
         return result;
     }
 }
-QStringList Routes::bfs_mindepth(QString startingStation, QString terminalStation)
+
+QStringList Routes::bfs_depth(QString startingStation, QString terminalStation)
 {
     map<Station*, Station*> parent;
     vector<Station*> res;
@@ -674,7 +659,7 @@ QStringList Routes::queryRoute(QString startingStation, QString terminalStation,
     if(mode == 0)
         return this->bfs(startingStation, terminalStation);
     else if(mode == 1)
-        return this->bfs_mindepth(startingStation, terminalStation);
+        return this->bfs_depth(startingStation, terminalStation);
     else
         return QStringList();
 

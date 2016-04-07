@@ -85,7 +85,7 @@ public:
     void removeAll();
     QStringList queryRoute(QString startingStation, QString terminalStation, int mode);
     QStringList bfs(QString startingStation, QString terminalStation);
-    QStringList bfs_mindepth(QString startingStation, QString terminalStation);
+    QStringList bfs_depth(QString startingStation, QString terminalStation);
     //---------------------------------------
     QString sellTicket(Ticket ticket);
     void refundTicket(int ticketID);

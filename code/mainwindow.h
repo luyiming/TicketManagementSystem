@@ -13,6 +13,11 @@
 #include "ui_ImportDialog.h"
 #include "trainAMDialog.h"
 #include "ui_trainAMDialog.h"
+#include <QGroupBox>
+#include <QVBoxLayout>
+//#include <QPaintDevice>
+//#include <QPaintEngine>
+//#include <QPainter>
 
 namespace Ui {
 class MainWindow;
@@ -33,6 +38,13 @@ public:
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
+//    void paintEvent(QPaintEvent *)
+//    {
+//        QPainter painter(this);
+//        painter.setPen(Qt::blue);
+//        painter.setBrush(Qt::blue);
+//        painter.drawRect(0, 0, 500, 500);
+//    }
 
 private slots:
     void on_quitButton_clicked();

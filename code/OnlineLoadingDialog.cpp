@@ -7,6 +7,7 @@
 #include <QScrollBar>
 #include <QFile>
 #include <QStringList>
+#include <QDate>
 
 OnlineLoadingDialog::OnlineLoadingDialog(QWidget *parent) :
     QDialog(parent),
@@ -60,6 +61,7 @@ void OnlineLoadingDialog::on_clearButton_clicked()
 
 void OnlineLoadingDialog::on_loadButton_clicked()
 {
+    QString currentDate = QDate::currentDate().toString("yyyy-MM-dd");
 
     QFile file("train.cache");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -93,7 +95,7 @@ void OnlineLoadingDialog::on_loadButton_clicked()
         bool priceFlag = false;
         QString price;
         QString routes;
-        QString departureTime = "2016-04-05 ";
+        QString departureTime = currentDate + " ";
         QString drivingTime;
         QString trainID;
         int index = 1;
@@ -103,7 +105,7 @@ void OnlineLoadingDialog::on_loadButton_clicked()
             QString s = list.at(i);
             if(s.contains("http://qq.ip138.com/train/"))
             {
-                s.remove(0, sizeof("http://qq.ip138.com/train/"));
+                s.remove(0, sizeof("http://qq.ip138.com/train"));
                 trainID = s.split(".htm").at(0);
                 continue;
             }
@@ -139,7 +141,9 @@ void OnlineLoadingDialog::on_loadButton_clicked()
                     priceFlag = true;
                     QStringList tmp = s.split(":");
                     price = tmp.at(tmp.size() - 1);
+
                     price.remove(price.size() - 1, 1);
+//                    qDebug() << price;
 //                    qDebug() << s;
                 }
                 continue;

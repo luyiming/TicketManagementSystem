@@ -4,6 +4,7 @@
 #include <QString>
 #include <QStringList>
 #include <QDebug>
+
 RouteQueryDialog::RouteQueryDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::RouteQueryDialog)
@@ -16,7 +17,6 @@ RouteQueryDialog::~RouteQueryDialog()
 {
     delete ui;
 }
-
 
 void RouteQueryDialog::setLine(QStringList line)
 {

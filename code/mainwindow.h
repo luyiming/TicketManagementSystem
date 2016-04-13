@@ -24,7 +24,6 @@ class MainWindow;
 }
 
 
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -32,8 +31,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    QTableWidget *trainTable;
-    QTableWidget *ticketTable;
+    void setVisitorMode(bool mode);
+    void autoImport();
 
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
@@ -48,24 +47,25 @@ protected:
 
 private slots:
     void on_quitButton_clicked();
-    void displayTime();
 
-    void modifyTrainDialog();
+    void deleteRoute();
     void addTrainDialog();
     void setTrainInfo(QStringList data);
+    void modifyTrainDialog();
     void modifyTrainInfo(QString preTrainID, QString preDepatureTime, QStringList data);
 
     void sellTicket(Ticket ticket);
     void sellTicketDialog();
     void refundTicketDialog();
 
+    void onlineLoadingDialog();
+    void onlineLoadFile();
     void importDialog();
     void loadFromFile();
     void exportDialog();
     void saveToFile();
     void ticketsSaveToFile();
     void refreshTable();
-    void deleteRoute();
 
     void queryDialog();
     void filterTrainData(QString trainID, QString startingStation, QString terminalStation);
@@ -77,13 +77,6 @@ private slots:
     void helpDialog();
     void removeAll();
 
-    void onlineLoadingDialog();
-    void onlineLoadFile();
-public:
-    void setVisitorMode(bool mode);
-    void autoImport();
-
-
 private:
     Ui::MainWindow *ui;
     QLabel *timeLabel;
@@ -91,8 +84,8 @@ private:
     RouteQueryDialog *routeQueryDialog;
     QStringList configInfo;
     bool visitorMode;
-
-
+    QTableWidget *trainTable;
+    QTableWidget *ticketTable;
 
 };
 

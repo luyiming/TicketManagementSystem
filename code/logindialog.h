@@ -16,7 +16,7 @@ public:
     ~LoginDialog();
 
 signals:
-    void visitorMode(bool);
+    void sendVisitorMode(bool);
 
 private slots:
     void on_loginButton_clicked();

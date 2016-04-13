@@ -41,14 +41,11 @@ void SellDialog::setTicketData(QString trainID2, QString departureTime2, QString
     for(int i = 0; i < routesWithSeats.size(); ++i)
     {
         QStringList temp = routesWithSeats[i].split(QString(" "), QString::SkipEmptyParts);
-//        for(int j = 0; j < temp.size(); ++j)
-//            qDebug() << temp[j];
         if(temp.size() < 2)
             qDebug() << "something may be wrong in routes and tickets, see selldialog.cpp";
         routes.append(temp[0]);
         seats.append(temp[1]);
     }
-//    QString::trimmed()//去空格
     ui->startingStationBox->addItems(routes);
     setTerminalStation();
     setSeatsLeft();
@@ -74,7 +71,6 @@ void SellDialog::setTerminalStation()
 
 void SellDialog::setSeatsLeft()
 {
-    //qDebug() << "setSeatsLeft";
     int seatsIndex = ui->startingStationBox->currentIndex();
     ui->seatsLeftLabel->setText(seats[seatsIndex]);
     int seatsMax = seats[seatsIndex].toInt();
@@ -91,11 +87,10 @@ void SellDialog::sellTicket()
     ticket.price = ui->priceLabel->text().toInt();
 
     int startIndex = ui->startingStationBox->currentIndex();
-    int terminalIndex = ui->terminalStationBox->currentIndex() + 1; //注意terminalStationBox下标不是从routes[0]开始的
+    int terminalIndex = ui->terminalStationBox->currentIndex() + 1; //terminalStationBox index not start from routes[0]
     for(int i = startIndex; i <= startIndex + terminalIndex; ++i)
     {
         ticket.routes.push_back(this->routes[i]);
-        //qDebug() << i;
     }
 
     int seatsIndex = ui->startingStationBox->currentIndex();

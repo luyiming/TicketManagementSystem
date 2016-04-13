@@ -48,11 +48,7 @@ void trainAMDialog::on_pushButton_clicked()
         trainData.clear();
         return;
     }
-//    if(preTrainID == trainData[0]  && preDepatureTime == trainData[1])
-//    {
-//        this->close();
-//        return;
-//    }
+
     if(this->preTrainID == "" && this->preDepatureTime == "")
         emit addValueChanged(trainData);
     else

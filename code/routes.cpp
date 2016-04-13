@@ -16,14 +16,6 @@
 #include <map>
 #include <set>
 
-using namespace std;
-
-//----------------------------------------------------------------//
-//                                                                //
-//       To understand recursion, see the bottom of this file     //
-//                                                                //
-//----------------------------------------------------------------//
-
 
 bool Routes::modifyRoute(QString preTrainID, QString preDepatureTime, QStringList trainData)
 {
@@ -34,7 +26,7 @@ bool Routes::modifyRoute(QString preTrainID, QString preDepatureTime, QStringLis
             return false;
         }
     }
-    deleteRoute(preTrainID.toStdString(), preDepatureTime.toStdString());
+    deleteRoute(preTrainID, preDepatureTime);
     createRoute(trainData);
     if(isAutoExport == true)
         saveToFile(this->trainExportPath);
@@ -349,9 +341,42 @@ bool Routes::loadFromFile(QString path, int &importNum, int &skipNum, QString &s
     }
 }
 
-vector<Route>::iterator Routes::findRoute(string trainID, string departureTime)
+QStringList Routes::search(QString startingStation, QString terminalStation)
 {
-    for(vector<Route>::iterator it = routes.begin(); it != routes.end(); ++it)
+    QString r, id;
+    QStringList res;
+    int min = 10000;
+    for(int i = 0; i < cities[startingStation.toStdString()].size(); ++i)
+    {
+        Station *t = cities[startingStation.toStdString()][i];
+        int cnt = 0;
+        while(t != NULL)
+        {
+            cnt++;
+            if(t != cities[startingStation.toStdString()][i])
+            {
+                r += "->";
+                id += "->";
+            }
+            r += QString::fromStdString(t->name);
+            id += QString::fromStdString(t->trainID);
+            if(t->name == terminalStation.toStdString() && cnt < min)
+            {
+                res.clear();
+                res << r << id;
+                break;
+            }
+            t = t->next;
+        }
+        r.clear();
+        id.clear();
+    }
+    return res;
+}
+
+std::vector<Route>::iterator Routes::findRoute(std::string trainID, std::string departureTime)
+{
+    for(std::vector<Route>::iterator it = routes.begin(); it != routes.end(); ++it)
     {
         if(it->trainID == trainID && it->departureTime == departureTime)
             return it;
@@ -359,7 +384,7 @@ vector<Route>::iterator Routes::findRoute(string trainID, string departureTime)
     return routes.end();
 }
 
-bool Routes::isTrainExist(string trainID, string departureTime)
+bool Routes::isTrainExist(std::string trainID, std::string departureTime)
 {
     if(findRoute(trainID, departureTime) == routes.end())
         return false;
@@ -373,13 +398,13 @@ void Routes::removeAll()
         refundTicket(i);
     cities.clear();
     while(!routes.empty())
-        deleteRoute(routes[0].trainID, routes[0].departureTime);
+        deleteRoute(QString::fromStdString(routes[0].trainID), QString::fromStdString(routes[0].departureTime));
     ticketID = 1000;
 }
 
-void Routes::deleteRoute(string trainID, string departureTime)
+void Routes::deleteRoute(QString trainID, QString departureTime)
 {
-    vector<Route>::iterator index = findRoute(trainID, departureTime);
+    std::vector<Route>::iterator index = findRoute(trainID.toStdString(), departureTime.toStdString());
     if(index == routes.end())
     {
         qDebug() << "something may be wrong when transfering data, see routes.cpp--deleteRoute()";
@@ -390,8 +415,8 @@ void Routes::deleteRoute(string trainID, string departureTime)
     while(it2 != NULL)
     {
         //delete Station in the cities vector
-        string name = it2->name;
-        for(vector<Station*>::iterator it = cities[name].begin(); it != cities[name].end(); )
+        std::string name = it2->name;
+        for(std::vector<Station*>::iterator it = cities[name].begin(); it != cities[name].end(); )
         {
             if(it2 == *it)
             {
@@ -422,7 +447,7 @@ QString Routes::sellTicket(Ticket ticket)
 {
     ticket.ticketID = this->ticketID++;
     tickets.push_back(ticket);
-    vector<Route>::iterator RouteIt = this->findRoute(ticket.trainID.toStdString(), ticket.departureTime.toStdString());
+    std::vector<Route>::iterator RouteIt = this->findRoute(ticket.trainID.toStdString(), ticket.departureTime.toStdString());
     int index = 0;
     for(Station *it = RouteIt->startingStation; it != NULL; it = it->next)
     {
@@ -449,7 +474,7 @@ void Routes::refundTicket(int ticketID)
         if(it->ticketID == ticketID)
         {
 
-            vector<Route>::iterator RouteIt = this->findRoute(it->trainID.toStdString(), it->departureTime.toStdString());
+            std::vector<Route>::iterator RouteIt = this->findRoute(it->trainID.toStdString(), it->departureTime.toStdString());
             int index = 0;
             for(Station *it2 = RouteIt->startingStation; it2 != NULL; it2 = it2->next)
             {
@@ -470,22 +495,21 @@ void Routes::refundTicket(int ticketID)
             return;
         }
     }
-    qDebug() << "refundTicket() may be wrong";
+    qDebug() << "wrong in Routes-->refundTicket()";
 }
 
 QStringList Routes::bfs(QString startingStation, QString terminalStation)
 {
-    queue<Station*> q;
-    map<Station*, Station*> parent;
-    parent.clear();
-    vector<Station*> res;
+    std::queue<Station*> q;
+    std::map<Station*, Station*> parent;
+    std::vector<Station*> res;
     QList<Station*> v;
+
     for(int i = 0; i < cities[startingStation.toStdString()].size(); ++i)
     {
         v << cities[startingStation.toStdString()][i];
         q.push(cities[startingStation.toStdString()][i]);
     }
-
     while(!q.empty())
     {
         Station* t = q.front();
@@ -501,14 +525,13 @@ QStringList Routes::bfs(QString startingStation, QString terminalStation)
         {
             Station* r = cities[t->next->name][i];
             if(v.contains(r))
-            {
                 continue;
-            }
             v << r;
             parent[r] = t;
             q.push(r);
         }
     }
+
     if(res.size() == 0)
     {
         return QStringList();
@@ -529,7 +552,7 @@ QStringList Routes::bfs(QString startingStation, QString terminalStation)
             if(i)
                 l += "->";
         }
-        for(int i = res.size() - 1; i >= 1; --i) //终点站的trainID不需要
+        for(int i = res.size() - 1; i >= 1; --i) //skip last trainID
         {
             ls += QString::fromStdString(res[i]->trainID);
             if(i > 1)
@@ -543,15 +566,16 @@ QStringList Routes::bfs(QString startingStation, QString terminalStation)
 
 QStringList Routes::bfs_depth(QString startingStation, QString terminalStation)
 {
-    map<Station*, Station*> parent;
-    vector<Station*> res;
+
+    std::map<Station*, Station*> parent;
+    std::vector<Station*> res;
     for(int minDepth = 1; ; ++minDepth)
     {
         bool last = false;
         bool flag = false;
         int numLessThanMinDepth = 0;
-        map<Station*, int> depth;
-        queue<Station*> q;
+        std::map<Station*, int> depth;
+        std::queue<Station*> q;
         parent.clear();
         res.clear();
         QList<Station*> v;
@@ -614,8 +638,9 @@ QStringList Routes::bfs_depth(QString startingStation, QString terminalStation)
         if(last == true)
             break;
     }
-
-
+    QStringList r = search(startingStation, terminalStation);
+    if(r.size() == 2)
+        return r;
     if(res.size() == 0)
     {
         return QStringList();
@@ -647,6 +672,7 @@ QStringList Routes::bfs_depth(QString startingStation, QString terminalStation)
         return result;
     }
 }
+
 
 QStringList Routes::queryRoute(QString startingStation, QString terminalStation, int mode)
 {
@@ -697,9 +723,3 @@ void Routes::setTicketImportPath(QString path)
 {
     this->ticketImportPaht = path;
 }
-
-//----------------------------------------------------------------//
-//                                                                //
-//        To understand recursion, see the top of this file       //
-//                                                                //
-//----------------------------------------------------------------//

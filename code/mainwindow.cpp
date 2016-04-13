@@ -29,8 +29,6 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QDialog>
-#include <string>
-#include <sstream>
 #include <QMenuBar>
 #include <QAction>
 #include <QProcess>
@@ -55,8 +53,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     this->setWindowIcon(QIcon(":/icon/train"));
 
-//-----------------------------------* DND *-------------------------------------------
-    setAcceptDrops(true);
+//------------------------------* Drag and Drop *--------------------------------------
+    this->setAcceptDrops(true);
     ui->tabWidget->setAcceptDrops(false);
 //----------------------------------* config *-----------------------------------------
     visitorMode = false;
@@ -99,9 +97,9 @@ MainWindow::MainWindow(QWidget *parent) :
         trainRoutes.setAutoImport(true);
     else
         trainRoutes.setAutoImport(false);
-    trainRoutes.setTrainExportPath(this->configInfo.at(2));
+    trainRoutes.setTrainExportPath (this->configInfo.at(2));
     trainRoutes.setTicketExportPath(this->configInfo.at(3));
-    trainRoutes.setTrainImportPath(this->configInfo.at(4));
+    trainRoutes.setTrainImportPath (this->configInfo.at(4));
     trainRoutes.setTicketImportPath(this->configInfo.at(5));
 
 //--------------------------------* signal-slots *----------------------------------------
@@ -116,9 +114,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->queryButton,     &QPushButton::clicked, this, &MainWindow::queryDialog);
     connect(ui->routeQueryButton,&QPushButton::clicked, this, &MainWindow::openRouteQueryDialog);
 //-----------------------------------* menu *--------------------------------------------
-    QMenu *fileMenu = ui->menuBar->addMenu(QString::fromLocal8Bit("文件"));
+    QMenu *fileMenu   = ui->menuBar->addMenu(QString::fromLocal8Bit("文件"));
     QMenu *configMenu = ui->menuBar->addMenu(QString::fromLocal8Bit("选项"));
-    QMenu *helpMenu = ui->menuBar->addMenu(QString::fromLocal8Bit("帮助"));
+    QMenu *helpMenu   = ui->menuBar->addMenu(QString::fromLocal8Bit("帮助"));
 
     QAction *configAction = new QAction(QIcon(":/icon/config.png"), QString::fromLocal8Bit("首选项"), this);
     connect(configAction, &QAction::triggered, this, &MainWindow::configDialog);
@@ -147,7 +145,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QAction *helpAction = new QAction(QIcon(":/icon/help.png"), QString::fromLocal8Bit("用户手册"), this);
     connect(helpAction, &QAction::triggered, this, &MainWindow::helpDialog);
     helpMenu->addAction(helpAction);
-//-----------------------------------* table *------------------------------------------
+//-----------------------------------* table *-----------------------------------
     //train Table initialize
     trainTable = new QTableWidget(this);
     trainTable->setColumnCount(9);
@@ -176,7 +174,7 @@ MainWindow::MainWindow(QWidget *parent) :
     trainTable->setColumnWidth(5, 60);
     trainTable->setColumnWidth(8, 115);
 
-    //ticket order table init
+    //ticket table init
     ticketTable = new QTableWidget(this);
     ticketTable->setColumnCount(8);
     ticketTable->setRowCount(0);
@@ -207,33 +205,22 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tabWidget->addTab(trainTable, QString::fromLocal8Bit("火车"));
     ui->tabWidget->addTab(ticketTable, QString::fromLocal8Bit("订单"));
 
-//------------------------------------* time *------------------------------------------
+//----------------------------------* time label *------------------------------------
 
     timeLabel = new QLabel(this);
-    //timeLabel->setGeometry(680, 471, 181, 16);
     QVBoxLayout *timeLayout = new QVBoxLayout(this);
     timeLayout->addWidget(timeLabel);
     ui->groupBox->setLayout(timeLayout);
     QTimer *timer = new QTimer(this);
-    displayTime();
-    connect(timer, SIGNAL(timeout()), this, SLOT(displayTime()));
+    connect(timer,
+            &QTimer::timeout,
+            [&](){timeLabel->setText("  " + QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));});
     timer->start(1000);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::displayTime()
-{
-    QDateTime dt;
-    QTime time;
-    QDate date;
-    dt.setTime(time.currentTime());
-    dt.setDate(date.currentDate());
-    QString currentDate = dt.toString("yyyy-MM-dd hh:mm:ss");
-    timeLabel->setText("  " + currentDate);
 }
 
 void MainWindow::on_quitButton_clicked()
@@ -257,8 +244,7 @@ void MainWindow::modifyTrainDialog()
     }
     else
     {
-
-//          数据排列
+//        format
 //        trainIDLine
 //        departureTimeLine
 //        drivingTimeLine
@@ -273,26 +259,31 @@ void MainWindow::modifyTrainDialog()
         trainData << trainTable->item(curRow, 6)->text();
 
         QComboBox *comboBox = (QComboBox*)trainTable->cellWidget(curRow, 8);
-        QString routesData_;
+        QString singleRoute;
         for(int i = 0 ; i < comboBox->count(); ++i)//split route and seats data in the comboBox
         {
             if(i)
-                routesData_ += '|';
-            std::string temp = comboBox->itemText(i).toStdString();
-            std::stringstream ss(temp);
-            std::string name_, seatsLeft_;
-            ss >> name_ >> seatsLeft_;
-            if(seatsLeft_ != trainData[4].toStdString() && i != comboBox->count() - 1)
+                singleRoute += '|';
+
+            QString stationWithSeat = comboBox->itemText(i);
+            QStringList t = stationWithSeat.split(" ", QString::SkipEmptyParts);
+            if(t.size() < 2)
+            {
+                qDebug() << "wrong in modiftTrain()";
+                return;
+            }
+
+            if(t.at(1) != trainData[4] && i != comboBox->count() - 1)
             {
                 QMessageBox::warning(this, QString::fromLocal8Bit("修改失败"), QString::fromLocal8Bit("该车次已售票,不可修改"));
                 return;
             }
-            routesData_ += QString::fromStdString(name_);
+            singleRoute += t.at(0);
         }
-        trainData << routesData_;
+        trainData << singleRoute;
 
         trainAMDialog *modifyDialog = new trainAMDialog(this);
-        modifyDialog->setTrainData(trainData);//set default data
+        modifyDialog->setTrainData(trainData);  //set default data
         connect(modifyDialog, &trainAMDialog::modifyValueChanged, this, &MainWindow::modifyTrainInfo);
         modifyDialog->exec();
     }
@@ -307,8 +298,6 @@ void MainWindow::modifyTrainInfo(QString preTrainID, QString preDepatureTime, QS
     }
     else
         QMessageBox::warning(this,  QString::fromLocal8Bit("失败"),  QString::fromLocal8Bit("有重复车次"));
-
-
 }
 
 void MainWindow::addTrainDialog()
@@ -477,8 +466,8 @@ void MainWindow::deleteRoute()
 
         if(QMessageBox::Yes == QMessageBox::question(this,QString::fromLocal8Bit("删除确认"),QString::fromLocal8Bit("你确定要删除%1车次列车吗?").arg(trainTable->item(rowNum, 0)->text())))
         {
-            trainRoutes.deleteRoute(trainTable->item(rowNum, 0)->text().toStdString(),
-                                    trainTable->item(rowNum, 3)->text().toStdString());
+            trainRoutes.deleteRoute(trainTable->item(rowNum, 0)->text(),
+                                    trainTable->item(rowNum, 3)->text());
             //trainRoutes.refreshTrainInfo(trainTable);
             trainTable->removeRow(rowNum);  //much fater
         }
@@ -613,7 +602,7 @@ void MainWindow::setConfig(QStringList newConfig)
     this->configInfo.clear();
     this->configInfo = newConfig;
 
-    if(this->configInfo.at(6) == "true")    //注意顺序,先设置auto flag
+    if(this->configInfo.at(6) == "true")//set auto flag first
         trainRoutes.setAutoExport(true);
     else
         trainRoutes.setAutoExport(false);

@@ -3,5 +3,4 @@
 *     Ticket Management System     *
 *                                  *
 ------------------------------------
-homework in college
-This is my first relatively complete software.
+程设大实验一

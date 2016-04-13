@@ -9,41 +9,39 @@
 #include <QWidget>
 #include <QStringList>
 
-using namespace std;
-
 struct Ticket
 {
     int ticketID;
+    int number;
+    int price;
     QString trainID;
     QString departureTime;
     QStringList routes;
     QString name;
-    int number;
-    int price;
     Ticket() : ticketID(-1), number(-1), price(-1){}
 };
 
 struct Station
 {
     Station():prev(NULL),next(NULL){}
-    string name;    //站点名字
-    int seatsLeft;  //剩余座位
-    string trainID;    //火车班次
-    Station *prev;  //上一站
-    Station *next;  //下一站
+    std::string name;   //name of train station
+    int seatsLeft;
+    std::string trainID;
+    Station *prev;      //previous station
+    Station *next;      //next station
 
 };
 
 struct Route
 {
     Route():startingStation(NULL),terminalStation(NULL){}
-    string trainID;    //火车班次
-    string departureTime;//出发时间
-    string drivingTime;    //行车时间
-    int maxPassengers;  //额定载客数
-    int price;  //票价
-    Station *startingStation;//起点站
-    Station *terminalStation;//终点站
+    std::string trainID;
+    std::string departureTime;
+    std::string drivingTime;
+    int maxPassengers;
+    int price;
+    Station *startingStation;
+    Station *terminalStation;
 };
 
 //-------------------------------------------------------------------
@@ -52,9 +50,9 @@ class Routes : public QObject
     Q_OBJECT
 
 private:
-    map<string, vector<Station*> > cities; //从城市名到列车的关联数组
-    vector<Route> routes;   //所有路线
-    vector<Ticket> tickets; //车票
+    std::map<std::string, std::vector<Station*> > cities;
+    std::vector<Route> routes;
+    std::vector<Ticket> tickets;
     int ticketID;
 
     QString trainExportPath;
@@ -72,24 +70,30 @@ public:
         isAutoExport = false;
         isAutoImport = false;
     }
-    bool isTrainExist(string trainID, string departureTime);
-    vector<Route>::iterator findRoute(string trainID, string departureTime);
-    void deleteRoute(string trainID, string departureTime);
+
+    //TODO: remove
+    std::vector<Route>::iterator findRoute(std::string trainID, std::string departureTime);
+    bool isTrainExist(std::string trainID, std::string departureTime);
+
+    //----------------* route *-----------------
+    void deleteRoute(QString trainID, QString departureTime);
     bool modifyRoute(QString preTrainID, QString preDepatureTime, QStringList trainData);
     bool createRoute(QStringList trainData);
+    QStringList queryRoute(QString startingStation, QString terminalStation, int mode);
+    QStringList bfs(QString startingStation, QString terminalStation);
+    QStringList bfs_depth(QString startingStation, QString terminalStation);
+    //---------------* ticket *-----------------
+    QString sellTicket(Ticket ticket);
+    void refundTicket(int ticketID);
+    //------------* table & file *--------------
     void refreshTrainInfo(QTableWidget* &trainTable);
     void refreshTicketInfo(QTableWidget* &ticketTable);
     bool loadFromFile(QString path, int &importNum, int &skipNum, QString &skipLine);
     bool saveToFile(QString path);   
     bool ticketsSaveToFile(QString path);
+    QStringList search(QString startingStation, QString terminalStation);
     void removeAll();
-    QStringList queryRoute(QString startingStation, QString terminalStation, int mode);
-    QStringList bfs(QString startingStation, QString terminalStation);
-    QStringList bfs_depth(QString startingStation, QString terminalStation);
-    //---------------------------------------
-    QString sellTicket(Ticket ticket);
-    void refundTicket(int ticketID);
-    //---------------------------------------
+    //---------------* config *-----------------
     void setTrainExportPath(QString path);
     void setTrainImportPath(QString path);
     void setTicketExportPath(QString path);
@@ -114,7 +118,7 @@ public:
     {
         if (rhs.column() == 5 || rhs.column() == 6 || rhs.column() == 7)
         {
-            // Compare cell data as integers for the 5,6,7 column.
+            // Compare cell data as integers for the 5, 6, 7 column.
             return text().toInt() < rhs.text().toInt();
         }
         return text() > rhs.text();

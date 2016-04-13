@@ -47,7 +47,7 @@ void LoginDialog::on_loginButton_clicked()
     QString pwd = ui->pwdLine->text();
     if(name == this->usrname && pwd == this->password)
     {
-        emit visitorMode(false);
+        emit sendVisitorMode(false);
         accept();
     }
     else
@@ -61,6 +61,6 @@ void LoginDialog::on_loginButton_clicked()
 
 void LoginDialog::on_visitorButton_clicked()
 {
-    emit visitorMode(true);
+    emit sendVisitorMode(true);
     accept();
 }

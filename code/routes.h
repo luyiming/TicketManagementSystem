@@ -24,7 +24,7 @@ struct Ticket
 struct Station
 {
     Station():prev(NULL),next(NULL){}
-    std::string name;   //name of train station
+    std::string name;
     int seatsLeft;
     std::string trainID;
     Station *prev;      //previous station

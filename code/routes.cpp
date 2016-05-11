@@ -362,6 +362,7 @@ QStringList Routes::search(QString startingStation, QString terminalStation)
             id += QString::fromStdString(t->trainID);
             if(t->name == terminalStation.toStdString() && cnt < min)
             {
+                min = cnt;
                 res.clear();
                 res << r << id;
                 break;

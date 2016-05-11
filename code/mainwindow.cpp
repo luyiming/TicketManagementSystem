@@ -113,6 +113,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->modifyButton,    &QPushButton::clicked, this, &MainWindow::modifyTrainDialog);
     connect(ui->queryButton,     &QPushButton::clicked, this, &MainWindow::queryDialog);
     connect(ui->routeQueryButton,&QPushButton::clicked, this, &MainWindow::openRouteQueryDialog);
+
 //-----------------------------------* menu *--------------------------------------------
     QMenu *fileMenu   = ui->menuBar->addMenu(QString::fromLocal8Bit("文件"));
     QMenu *configMenu = ui->menuBar->addMenu(QString::fromLocal8Bit("选项"));
@@ -154,10 +155,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(trainTable, &QTableWidget::cellDoubleClicked, this, &MainWindow::modifyTrainDialog);
 
     QStringList headers;
-    headers << QString::fromLocal8Bit("班次号") << QString::fromLocal8Bit("始发站")
-            << QString::fromLocal8Bit("终点站") << QString::fromLocal8Bit("发车时间")
-            << QString::fromLocal8Bit("行车时间") << QString::fromLocal8Bit("票价")
-            << QString::fromLocal8Bit("额定载客量") << QString::fromLocal8Bit("余票数")
+    headers << QString::fromLocal8Bit("班次号")
+            << QString::fromLocal8Bit("始发站")
+            << QString::fromLocal8Bit("终点站")
+            << QString::fromLocal8Bit("发车时间")
+            << QString::fromLocal8Bit("行车时间")
+            << QString::fromLocal8Bit("票价")
+            << QString::fromLocal8Bit("额定载客量")
+            << QString::fromLocal8Bit("余票数")
             << QString::fromLocal8Bit("路线/余票");
     trainTable->setHorizontalHeaderLabels(headers);
     trainTable->setEditTriggers(QAbstractItemView::NoEditTriggers); // uneditable
@@ -184,10 +189,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ticketTable->verticalHeader()->setVisible(false);//hide vertical header
     //table header
     headers.clear();
-    headers << QString::fromLocal8Bit("订单号") << QString::fromLocal8Bit("购票人")
-            << QString::fromLocal8Bit("车次号") << QString::fromLocal8Bit("始发站")
-            << QString::fromLocal8Bit("终点站") << QString::fromLocal8Bit("票价")
-            << QString::fromLocal8Bit("票数") << QString::fromLocal8Bit("总价");
+    headers << QString::fromLocal8Bit("订单号")
+            << QString::fromLocal8Bit("购票人")
+            << QString::fromLocal8Bit("车次号")
+            << QString::fromLocal8Bit("始发站")
+            << QString::fromLocal8Bit("终点站")
+            << QString::fromLocal8Bit("票价")
+            << QString::fromLocal8Bit("票数")
+            << QString::fromLocal8Bit("总价");
     ticketTable->setHorizontalHeaderLabels(headers);
     //table width
     ticketTable->resizeColumnsToContents();
